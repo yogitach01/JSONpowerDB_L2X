@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add Record - JPDB</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+	<h2>Add a record</h2>
+	<form id="empForm" method="post">
+            <div class="form-group">
+		<span>
+                    <label for="empId">Employee ID:</label>
+                    <label id="empIdMsg"></label>
+		</span>
+		<input type="text" class="form-control" name="empId" id="empId" placeholder="Enter Employee ID" required>
+            </div>
+            <div class="form-group">
+		<label for="empName">Employee Name:</label>
+		<input type="text" class="form-control" id="empName" placeholder="Enter Employee Name" name="empName">
+            </div>
+            <div class="form-group">
+		<label for="empEmail">Email:</label>
+		<input type="email" class="form-control" id="empEmail" placeholder="Enter Employee Email" name="empEmail">
+            </div>
+            <input type="button" class="btn btn-primary" id="empSave" value="Save"
+            onclick="saveEmployee();">
+	</form>
+    </div>
+    
+    <script>
+        
+        function validateAndGetFormData() {
+            var empIdVar = $("#empId").val();
+            if (empIdVar === "") {
+		alert("Employee ID Required Value");
+		$("#empId").focus();
+		return "";
+            }
+
+            var empNameVar = $("#empName").val();
+            if (empNameVar === "") {
+		alert("Employee Name is Required Value");
+		$("#empName").focus();
+		return "";
+            }
+
+            var empEmailVar = $("#empEmail").val();
+            if (empEmailVar === "") {
+		alert("Employee Email is Required Value");
+		$("#empEmail").focus();
+		return "";
+            }
+
+            var jsonStrObj = {
+                empId: empIdVar,
+		empName: empNameVar,
+		empEmail: empEmailVar,
+            };
+			
+            return JSON.stringify(jsonStrObj);
+	}
+        
+        function resetForm() {
+            $("#empId").val("")
+            $("#empName").val("");
+            $("#empEmail").val("");
+            $("#empId").focus();
+	}
+        
+        function saveEmployee() {
+            var jsonStr = validateAndGetFormData();
+            if (jsonStr === "") {
+                return;
+            }
+		
+            var putReqStr = createPUTRequest("90935704|-31948839700492320|90934828",
+            jsonStr, "Employee", "Emp-Rel");
+            alert(putReqStr);
+            jQuery.ajaxSetup({async: false});
+            var resultObj = executeCommandAtGivenBaseUrl(putReqStr, "http://api.login2explore.com:5577", "/api/iml");
+            alert(JSON.stringify(resultObj));
+            jQuery.ajaxSetup({async: true});
+            
+            resetForm();
+	}
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+</body>
+</html>
+
